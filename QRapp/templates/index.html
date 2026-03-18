@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+	{% load static %}
+<head>
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon-->
+	<link rel="shortcut icon" href="/static/img/fav.png">
+	<!-- Author Meta -->
+	<meta name="author" content="codepixer">
+	<!-- Meta Description -->
+	<meta name="description" content="">
+	<!-- Meta Keyword -->
+	<meta name="keywords" content="">
+	<!-- meta character set -->
+	<meta charset="UTF-8">
+	<!-- Site Title -->
+    <title>{% block title %}Museum Qr{% endblock %}</title>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap" rel="stylesheet" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+		<!--
+		CSS
+		============================================= -->
+		<link rel="stylesheet" href="/static/css/linearicons.css">
+		<link rel="stylesheet" href="/static/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" href="/static/css/magnific-popup.css">
+		<link rel="stylesheet" href="/static/css/nice-select.css">					
+		<link rel="stylesheet" href="/static/css/animate.min.css">
+		<link rel="stylesheet" href="/static/css/owl.carousel.css">
+		<link rel="stylesheet" href="/static/css/main.css">
+		<link rel="stylesheet" href="/static/css/header.css">
+
+	</head>
+	<body>
+
+<!-- First Header (Top Bar) -->
+<header id="header-top">
+    <div class="container header-top">
+        <div class="row">
+            <!-- Navbar Section -->
+            <div class="navbar">
+                <div class="news-section">
+                    <span class="latest-news">Latest News</span>
+                    <marquee behavior="scroll" direction="left" class="news-title">
+                        Wildlife Week Celebrations 2024
+                    </marquee>
+                </div>
+            </div>
+
+            <!-- Top Right Section -->
+            <div class="col-6 top-head-right">
+                <!-- QR Scanner Icon -->
+				<a href="{% url 'qr_code_scanner' %}" id="scanner-icon-mobile" >
+					<i class="fa-solid fa-qrcode" style="color: #000000;"></i>
+				</a>
+
+                <!-- Social Media Links -->
+                <ul class="social-links">
+                    <li><a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#" aria-label="YouTube"><i class="fa fa-youtube"></i></a></li>
+                    <li><a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="#" aria-label="Pinterest"><i class="fa fa-pinterest"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+{% load static %}	  
+  
+  <!-- Second Header (Main Navigation) -->
+  <header id="header-main">
+	<div class="container">
+	  <div id="logo">
+		<a href="{% url 'index' %}"><img src="{% static 'img/elements/Logo.png' %}" alt="Logo" title="Logo" /></a>
+	  </div>
+	  <nav id="nav-menu-container">
+		<ul class="nav-menu">
+		  <li class="menu-active"><a href="{% url 'index' %}">Home</a></li>
+		  <li class="menu-has-children"><a href="about/">About</a>
+			<ul>
+			  <li><a href="">About Us</a></li>
+			  <li><a href="">Objectives</a></li>
+			  <li><a href="">Vision</a></li>
+			  <li><a href="">Mission</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Institution/">Institution</a>
+			<ul>
+			  <li><a href="">Thiruvananthapuram</a></li>
+			  <li><a href="">Thrissur</a></li>
+			  <li><a href="">Kozhikode</a></li>
+			  <li><a href="">Kannur</a></li>
+			  <li><a href="">Wayanad</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Notice/">Notice</a>
+			<ul>
+			  <li><a href="">Govt. Orders</a></li>
+			  <li><a href="">RTI</a></li>
+			  <li><a href="">Tenders</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Rentals/">Rentals</a>
+			<ul>
+			  <li><a href="">Thiruvananthapuram</a></li>
+			  <li><a href="">Kozhikode</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Visit Us/">Visit Us</a>
+			<ul>
+			  <li><a href="">Visitor's Information</a></li>
+			</ul>
+		  </li>
+		  <li><a href="{% url 'event_list' %}">Events</a></li>
+
+		  <li class="menu-has-children"><a href="gallery/">Gallery</a>
+			<ul>
+			  <li><a href="">Photo Gallery</a></li>
+			  <li><a href="">Video Gallery</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="">Contact</a>
+			<ul>
+			  <li><a href="">Directorate Office</a></li>
+			  <li><a href="">Feedback</a></li>
+			</ul>
+		  </li>
+		  <li><a href="/admin_login/">Login</a></li>
+		</ul>
+	  </nav>
+	    <!-- Placeholder for QR Scanner Icon in header-main -->
+		<a href="{% url 'qr_code_scanner' %}" id="scanner-icon-mobile" >
+			<i class="fa-solid fa-qrcode" style="color: #000000;"></i>
+		</a>
+		
+
+		<!-- Mobile Toggle Button -->
+		<button id="mobile-nav-toggle">
+			<i class="lnr lnr-menu"></i> <!-- Default icon -->
+		</button>
+	</div>
+  </header>
+
+  <nav id="mobile-nav">
+	<ul class="nav-menu">
+		  <li class="menu-active"><a href="{% url 'index' %}">Home</a></li>
+		  <li class="menu-has-children"><a href="about/">About</a>
+			<ul>
+			  <li><a href="">About Us</a></li>
+			  <li><a href="">Objectives</a></li>
+			  <li><a href="">Vision</a></li>
+			  <li><a href="">Mission</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Institution/">Institution</a>
+			<ul>
+			  <li><a href="">Thiruvananthapuram</a></li>
+			  <li><a href="">Thrissur</a></li>
+			  <li><a href="">Kozhikode</a></li>
+			  <li><a href="">Kannur</a></li>
+			  <li><a href="">Wayanad</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Notice/">Notice</a>
+			<ul>
+			  <li><a href="">Govt. Orders</a></li>
+			  <li><a href="">RTI</a></li>
+			  <li><a href="">Tenders</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Rentals/">Rentals</a>
+			<ul>
+			  <li><a href="">Thiruvananthapuram</a></li>
+			  <li><a href="">Kozhikode</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="Visit Us/">Visit Us</a>
+			<ul>
+			  <li><a href="">Visitor's Information</a></li>
+			</ul>
+		  </li>
+		  <li><a href="{% url 'event_list' %}">Events</a></li>
+
+		  <li class="menu-has-children"><a href="gallery/">Gallery</a>
+			<ul>
+			  <li><a href="">Photo Gallery</a></li>
+			  <li><a href="">Video Gallery</a></li>
+			</ul>
+		  </li>
+		  <li class="menu-has-children"><a href="">Contact</a>
+			<ul>
+			  <li><a href="">Directorate Office</a></li>
+			  <li><a href="">Feedback</a></li>
+			</ul>
+		  </li>
+		  <li><a href="/admin_login/">Login</a></li>
+		</ul>
+	  </nav>
+
+  {% block content %}
+
+		<!-- start banner Area -->
+		<section class="banner-area relative" id="home">
+			<div class="overlay-bg"></div>	
+			<div class="container">
+				<div class="row fullscreen d-flex align-items-center justify-content-center">
+					<div class="banner-content col-lg-8">
+						<h6> Explore </h6>
+						<h1 class="text-white">
+							 State Museum Thrissur 				
+						</h1>
+						<!-- <p class="pt-20 pb-20 text-white">
+							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.  sed do eiusmod tempor incididunt..
+						</p> -->
+						<!-- <a href="#" class="primary-btn text-uppercase">Get Started</a> -->
+					</div>											
+				</div>
+			</div>					
+		</section>
+		<!-- End banner Area -->	
+
+
+<!-- Start Events Area -->
+<section class="events-area section-gap" id="events">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="menu-content pb-60 col-lg-10">
+                <div class="title text-center">
+                    <h1 class="mb-10">Checkout our Upcoming Events</h1>
+                    <a href="/events_list/" class="learn-more">
+                        See all Events <span>&#8594;</span> <!-- Arrow symbol -->
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="events-carousel">
+                {% for event in events %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="single-event">
+                        <img class="img-fluid" src="{{ event.image.url }}" alt="{{ event.name }}">
+                        <a href="#"><h4>{{ event.name }}</h4></a>
+                        <h6><span>{{ event.event_date|date:"jS F" }}</span> at {{ event.location }}</h6>
+                        <h6>{{ event.description|truncatewords:10 }}</h6>
+                        <h5 class="date">{{ event.event_date|date:"jS F, Y" }}</h5>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No upcoming events at the moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Events Area -->
+
+<!-- Start History Section -->
+<section class="history-section section-gap">
+    <div class="container">
+        <!-- Centered Heading -->
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="history-heading">
+                    Welcome to the <span>State Museum and Zoo</span> - Thrissur
+                </h1>
+            </div>
+        </div>
+
+        <!-- First Paragraph Left-Aligned -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <p class="first-paragraph">
+                    The Diwan Peshkar of Cochin Province, Mr. Sankarayya, was the visionary behind the establishment of 
+                    Viyyoor Park in 1885, located where the Central Prison stands today. Due to a lack of visitors, 
+                    the park was closed in 1898. In 1912, the park was relocated and renamed the Cochin State Museum by
+                    acting Diwan K. Narayana Marar. Initially annexed to Krishna Vilasam Palace in Ernakulam, it later moved to Chembukkavu, where it resides today.
+                    In 1913, L.K. Anantha Krishna Ayyar was appointed as the museum's first full-time archaeologist.
+                </p>
+            </div>
+        </div>
+
+        <!-- Image on Left and Content on Right -->
+        <div class="row align-items-center mt-4">
+            <div class="col-lg-6 history-left">
+                <div id="image-container" class="position-relative">
+                    <img src="/static/img/elements/museum1.jpg" alt="State Museum and Zoo Image" class="img-fluid image" id="image-1">
+                    <img src="/static/img/pages/art museum.jpg" alt="Art Museum Image" class="img-fluid image" id="image-2">
+                </div>
+            </div>
+            
+            <div class="col-lg-6 history-right">
+                <p>
+                    The zoo was founded in 1914 by the King of Cochin, who generously donated animals from the Thrippunithura Kanakakkunnu Palace. Today, the State Museum and Zoo functions under the Department of Museums and Zoos, Government of Kerala.
+                    Spanning 13.5 acres, the zoo houses over 50 species of animals, including mammals, birds, and reptiles. The expansive compound also features an art museum, a multi-purpose museum, a botanical garden, a star garden, and a 3D theatre.
+                    Beyond being a center for recreation and education, the State Museum and Zoo play a crucial role in wildlife conservation and the preservation of cultural heritage in Kerala.<br><br>
+
+                    The current Art Museum building is located within the compound of the Thrissur Zoo. This century-old, majestic structure was once the residence of the famous educationist Shri I.N. Menon.
+                    The building was constructed using iron beams and Italian floor tiles. Notable exhibits in the museum include metal sculptures over 600 years old, a peacock lamp, Garuda lamp, port lamp,
+                    artwork of "The Last Supper" in medium straw on black cloth, Indonesian paintings, and much more.
+                </p>
+            </div>
+        </div>  
+    </div>
+</section>
+<!-- End History Section -->
+
+		 {% endblock %}
+    
+
+<!-- Start Footer Area -->
+<footer class="footer-area section-gap">
+    <div class="container">
+        <!-- First Row -->
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-footer-widget">
+                    <h6>Contact Us</h6>
+                    <p>Phone: 0471-2316275</p>
+                    <p>Fax: 0471-2318294</p>
+                    <p>Directorate of Museums and Zoos, Thiruvananthapuram</p>
+                    <h6>Follow Us</h6>
+                    <p>Let us be social</p>
+                    <div class="footer-social d-flex align-items-center">
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-twitter"></i></a>
+						<a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+						<a href="#" aria-label="Pinterest"><i class="fa fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-footer-widget">
+                    <h6>Office Hours</h6>
+                    <h5>Tuesday - Sunday</h5>
+                    <p>10:15 AM - 05:15 PM</p>
+                    <h5>Lunch Break</h5>
+                    <p>01:15 PM - 02:00 PM</p>
+                    <h5>Monday: <span style="color:red;">Holiday</span></h5>
+                </div>
+            </div>
+        </div>
+	</div>
+    <!-- Credit Line Full Width -->
+    <div class="footer-credit">
+        Powered by <strong>VScript Solutions</strong>, Department of Computer Science, 
+        Vimala College (Autonomous), Thrissur
+    </div>
+</footer>
+
+<!-- End footer Area -->
+
+		<script src="/static/js/vendor/jquery-2.2.4.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="/static/js/vendor/bootstrap.min.js"></script>			
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
+		  <script src="/static/js/easing.min.js"></script>			
+		<script src="/static/js/hoverIntent.js"></script>
+		<script src="/static/js/superfish.min.js"></script>	
+		<script src="/static/js/jquery.ajaxchimp.min.js"></script>
+		<script src="/static/js/jquery.magnific-popup.min.js"></script>	
+		<script src="/static/js/owl.carousel.min.js"></script>	
+		<script src="/static/js/imagesloaded.pkgd.min.js"></script>
+		<script src="/static/js/justified.min.js"></script>					
+		<script src="/static/js/jquery.sticky.js"></script>
+		<script src="/static/js/jquery.nice-select.min.js"></script>			
+		<script src="/static/js/parallax.min.js"></script>		
+		<script src="/static/js/mail-script.js"></script>	
+		<script src="/static/js/main.js"></script>	
+	</body>
+</html>
+
+
+

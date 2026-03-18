@@ -1,0 +1,263 @@
+{% extends "admin/admin_home.html" %}
+{% block content %}
+<title>
+    {% if request.session.language == 'en' %}
+        {{ exhibit.name }} - Exhibit Details
+    {% else %}
+        {{ exhibit.name_ml }} - Exhibit Details (Malayalam)
+    {% endif %}
+</title>
+{% load static %}
+<body>
+    <div class="container mt-5">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin_home/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/list_exhibits/">Exhibits List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {% if request.session.language == 'en' %}
+                        {{ exhibit.name }}
+                    {% else %}
+                        {{ exhibit.name_ml }}
+                    {% endif %}
+                </li>
+            </ol>
+        </nav>
+
+        <h1 class="text-center mb-4">
+            {% if request.session.language == 'en' %}
+                {{ exhibit.name }}
+            {% else %}
+                {{ exhibit.name_ml }}
+            {% endif %}
+        </h1>
+
+        <!-- Card Container -->
+        <div class="card exhibit-card shadow-lg">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Slideshow Container -->
+                    <div class="col-md-6">
+                        <div id="exhibitCarousel" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for image in exhibit_images %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ image.image.url }}" alt="Image {{ forloop.counter }}" class="img-fluid">
+                                        <div class="carousel-caption">
+                                            <p>
+                                                {% if request.session.language == 'en' %}
+                                                    {{ image.caption|default:" " }}
+                                                {% else %}
+                                                    {{ image.caption_ml|default:" " }}
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="carousel-item active">
+                                        <img src="{% static 'img/default-image.jpg' %}" alt="No Images Available" class="img-fluid">
+                                        <div class="carousel-caption">
+                                            <p>No images available for this exhibit</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <a class="carousel-control-prev" href="#exhibitCarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#exhibitCarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Description and QR Code Container -->
+                    <div class="col-md-6">
+                        <div class="description">
+                            <h5>
+                                {% if request.session.language == 'en' %}
+                                    {{ exhibit.description|linebreaksbr|default:"No description available" }}
+                                {% else %}
+                                    {{ exhibit.description_ml|linebreaksbr|default:"No description available" }}
+                                {% endif %}
+                            </h5>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <h4>Scan the QR Code</h4>
+                            {% if exhibit.qr_code_image %}
+                                <img src="{{ exhibit.qr_code_image.url }}" alt="QR Code for {{ exhibit.name }}" class="qr-code img-fluid">
+                            {% else %}
+                                <p>No QR code available for this exhibit.</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Language button -->
+                        <div class="text-center mt-4">
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <button type="submit" class="language-btn">
+                                    <img src="{% static 'img/elements/translate.png' %}" alt="Switch Language" class="language-icon">
+                                    <span class="language-text">
+                                        {% if request.session.language == 'en' %}
+                                            Switch to Malayalam
+                                        {% else %}
+                                            Switch to English
+                                        {% endif %}
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+<script>
+    $(document).ready(function() {
+        // Enable swipe functionality
+        $('#exhibitCarousel').on('touchstart', function(event) {
+            const touchStartX = event.originalEvent.touches[0].clientX;
+
+            $(this).on('touchmove', function(event) {
+                const touchEndX = event.originalEvent.touches[0].clientX;
+                const touchDiff = touchStartX - touchEndX;
+
+                if (touchDiff > 50) {
+                    $(this).carousel('next');
+                } else if (touchDiff < -50) {
+                    $(this).carousel('prev');
+                }
+                $(this).off('touchmove'); // Remove the touchmove event listener
+            });
+        });
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+
+    .exhibit-card {
+        margin-top: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .exhibit-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .description {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .description:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .qr-code {
+        max-width: 150px;
+        height: auto;
+        transition: transform 0.3s ease;
+    }
+
+    .qr-code:hover {
+        transform: scale(1.05);
+    }
+
+    .language-btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .language-btn:hover {
+        background-color: #f1f1f1;
+        transform: translateY(-3px);
+    }
+
+    .language-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+    }
+
+    .language-text {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .carousel-caption {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        font-size: 1.1rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .carousel-caption p {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .carousel-caption:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+        transform: translateX(-50%) translateY(-5px);
+    }
+    
+
+    @media (max-width: 768px) {
+        .carousel-caption {
+            font-size: 1rem;
+            padding: 10px 12px;
+        }
+
+        .language-btn {
+            font-size: 14px;
+            padding: 10px 15px;
+        }
+
+        .language-icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+</style>
+{% endblock %}

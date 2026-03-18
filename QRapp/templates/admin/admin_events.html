@@ -1,0 +1,407 @@
+{% extends "admin/admin_home.html" %}
+
+{% block content %}
+<!-- Add Bootstrap CSS and JS -->
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<div class="container my-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_event_list' %}">Event List</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add New Event</li>
+        </ol>
+    </nav>
+
+<div class="container mt-5 event-form-container">
+    <h2>Add New Event</h2>
+    <form id="eventForm" enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        
+        <!-- Event Name -->
+        <label for="event_name">Event Name:</label>
+        <input type="text" id="event_name" name="event_name" required aria-label="Event Name">
+
+        <!-- Event Type -->
+        <label for="event_type">Event Type:</label>
+        <select id="event_type" name="event_type" required aria-label="Event Type">
+            <option value="Competition">Competition</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Meetup">Meetup</option>
+            <option value="Event">Event</option>
+        </select>
+
+        <!-- Event Date -->
+        <label for="event_date">Event Date:</label>
+        <input type="date" id="event_date" name="event_date" required aria-label="Event Date">
+
+        <!-- Event Time -->
+        <label for="event_time">Event Time:</label>
+        <input type="time" id="event_time" name="event_time" required aria-label="Event Time">
+
+        <!-- Event Duration -->
+        <label for="event_duration">Event Duration (in hours):</label>
+        <input type="number" step="0.5" id="event_duration" name="event_duration" required aria-label="Event Duration">
+
+        <!-- Event Organizer -->
+        <label for="event_organizer">Organizer Name:</label>
+        <input type="text" id="event_organizer" name="event_organizer" required aria-label="Organizer Name">
+
+        <!-- Event Location -->
+        <label for="event_location">Location:</label>
+        <input type="text" id="event_location" name="event_location" required aria-label="Event Location">
+
+        <!-- Event Image -->
+        <label for="event_image">Event Image:</label>
+        <input type="file" id="event_image" name="event_image" aria-label="Upload Event Image" required>
+
+        <!-- Image Preview -->
+        <div id="imagePreview" style="display: none; margin-top: 10px;">
+            <img id="previewImg" src="" alt="Image Preview" style="max-width: 100%; height: auto; border-radius: 8px;"/>
+            <button type="button" id="deleteBtn" style="position: absolute; top: 5px; right: 5px; background: rgba(0, 0, 0, 0.5); color: white; border: none; border-radius: 50%; padding: 5px; cursor: pointer;">X</button>
+         </div>
+
+        <!-- Event Description -->
+        <label for="event_description">Description:</label>
+        <textarea id="event_description" name="event_description" rows="4" required aria-label="Event Description"></textarea>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-3">Add Event</button>
+    </form>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Event added successfully!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="okButton">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorModalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+// Handle form submission
+document.getElementById('eventForm').onsubmit = async function (e) {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    const formData = new FormData(this); // Capture form data
+
+    try {
+        const response = await fetch('', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Show success modal
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+
+            // Add event listener to OK button for redirect
+            document.getElementById('okButton').addEventListener('click', function () {
+                window.location.href = "/admin_events/"; // Redirect to event list page
+            });
+        } else {
+            // Show error modal with the error message
+            document.getElementById('errorModalMessage').textContent = result.error || 'Something went wrong.';
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        }
+    } catch (error) {
+        console.error('Error during submission:', error);
+
+        // Display error modal for unexpected issues
+        document.getElementById('errorModalMessage').textContent = 'An unexpected error occurred. Please try again.';
+        const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+    }
+};
+
+    
+// Image preview functionality
+document.getElementById('event_image').addEventListener('change', function (e) {
+    const file = e.target.files[0]; // Get the selected file
+    const reader = new FileReader(); // Create FileReader to read the image
+
+    reader.onload = function (event) {
+        const previewContainer = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        
+        // Set the source of the preview image to the result of FileReader
+        previewImg.src = event.target.result;
+        previewContainer.style.display = 'block'; // Show the image preview container
+        
+        // Style the preview image dynamically
+        previewImg.style.maxWidth = '130px';
+        previewImg.style.height = 'auto';
+        previewImg.style.borderRadius = '4px';
+        previewImg.style.border = '1px solid #ccc';
+        previewImg.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)'; // Soft shadow around the image
+        
+        // Style the delete button dynamically
+        const deleteBtn = document.getElementById('deleteBtn');
+        deleteBtn.textContent = '✖';
+        deleteBtn.style.position = 'absolute';
+        deleteBtn.style.top = '-15px';
+        deleteBtn.style.right = '5px';
+        deleteBtn.style.background = 'rgba(0, 0, 0, 0.5)';
+        deleteBtn.style.color = 'white';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.borderRadius = '50%';
+        deleteBtn.style.width = '30px';
+        deleteBtn.style.height = '30px';
+        deleteBtn.style.padding = '5px';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.fontSize = '16px';
+        deleteBtn.style.transition = 'background-color 0.3s';
+
+        // Hover effect for delete button
+        deleteBtn.addEventListener('mouseover', function() {
+            deleteBtn.style.background = 'rgba(255, 0, 0, 0.7)';
+        });
+
+        deleteBtn.addEventListener('mouseout', function() {
+            deleteBtn.style.background = 'rgba(0, 0, 0, 0.5)';
+        });
+    };
+
+    if (file) {
+        reader.readAsDataURL(file); // Read the image file
+    }
+});
+
+// Image delete button functionality
+document.getElementById('deleteBtn').addEventListener('click', function () {
+    const previewContainer = document.getElementById('imagePreview');
+    previewContainer.style.display = 'none'; // Hide the preview container
+    document.getElementById('event_image').value = ''; // Reset the file input
+});
+
+
+
+    </script>
+    
+<!-- CSS Section -->
+<style>
+body {
+    overflow-x: hidden; /* Prevent body overflow causing page shifts */
+}
+
+.event-form-container {
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background: #fff;
+    width: 50%; /* Default width for larger screens */
+    max-width: 600px;
+    margin: 0 auto; /* Center container horizontally */
+    box-sizing: border-box; /* Prevent layout issues due to padding */
+    opacity: 0;
+    animation: fadeIn 1s forwards; /* Animation on load */
+}
+
+.event-form-container h2 {
+    text-align: center;
+    color: #333;
+    opacity: 0;
+    animation: fadeInUp 1s 0.3s forwards; /* Header fade-in animation */
+}
+
+.event-form-container label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.event-form-container input,
+.event-form-container select,
+.event-form-container textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    opacity: 0;
+    animation: slideIn 1s forwards; /* Animation for form inputs */
+}
+
+.event-form-container button {
+    width: 100%;  /* Make the button fill the container */
+    padding: 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s;
+    opacity: 1; /* Ensure visibility */
+    animation: slideIn 1s 0.3s forwards; /* Apply animation */
+    display: block;  /* Ensure button takes full width */
+    text-align: center;  /* Center the button text */
+    box-sizing: border-box; /* Prevent button from expanding beyond container */
+}
+
+.event-form-container button:hover {
+    background: #218c27;
+    transform: scale(1.05); /* Add scaling effect on hover */
+}
+
+/* Modal Customization */
+/* Custom Modal Styles */
+.modal-content {
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.success-modal .modal-content {
+    background-color: #d4edda;
+    border: 1px solid #28a745;
+    color: #155724;
+}
+
+.success-modal .modal-header {
+    background-color: #28a745;
+    color: white;
+}
+
+.error-modal .modal-content {
+    background-color: #f8d7da;
+    border: 1px solid #dc3545;
+    color: #721c24;
+}
+
+.error-modal .modal-header {
+    background-color: #dc3545;
+    color: white;
+}
+
+.modal-footer .btn-secondary {
+    background-color: #28a745; /* Green for success */
+    color: white;
+    border: none;
+}
+
+.error-modal .modal-footer .btn-secondary {
+    background-color: #dc3545; /* Red for error */
+}
+
+.modal-body {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.btn-close {
+    font-size: 1.5rem;
+    color: #000;
+}
+
+/* Modal Content Animation */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Add transition for smooth visibility change */
+.modal-content-custom {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+#imagePreview {
+    position: relative;
+    display: none;
+    margin-top: 10px;
+    width: fit-content;
+}
+
+#previewImg {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+#deleteBtn {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#deleteBtn:hover {
+    background: rgba(255, 0, 0, 0.7);
+}
+
+@media (max-width: 768px) {
+    .event-form-container {
+        width: 90%;
+        margin: 0 auto; /* Adjust margin for smaller screens */
+    }
+
+    .event-form-container h2 {
+        font-size: 1.5rem; /* Adjust heading size for mobile */
+    }
+
+    .event-form-container button {
+        width: 100%; /* Ensure the button fills the width on small screens */
+    }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login Panel</title>
+  <link rel="stylesheet" href="style.css">
+  {% load static %}
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #F4F7FA; /* Lighter background for a softer look */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh; /* Full height */
+      padding: 20px; /* Padding for small screens */
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px; /* Rounded corners */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      animation: fadeIn 0.5s ease-in-out; /* Fade-in animation */
+      max-width: 800px; /* Max width for the container */
+      width: 100%; /* Full width */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .myform {
+      flex: 1; /* Take remaining space */
+      padding: 20px; /* Padding for form */
+    }
+
+    .myform h2 {
+      color: #2E3A47; /* Darker text color for professionalism */
+      margin-bottom: 20px;
+      font-size: 26px; /* Increased font size */
+      font-weight: 600; /* Semi-bold font weight */
+      text-align: center; /* Center align the text */
+      text-transform: uppercase; /* Uppercase text */
+    }
+
+    .myform input {
+      width: 100%;
+      padding: 12px; /* Increased padding */
+      margin-bottom: 20px;
+      font-size: 16px; /* Increased font size */
+      color: #333; /* Darker text color */
+      border: 1px solid #CED4DA; /* Light border */
+      border-radius: 5px; /* Rounded corners */
+      background-color: #FFFFFF; /* White background */
+      transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transition effect */
+    }
+
+    .myform input:focus {
+      border-color: #007BFF; /* Change border color on focus */
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Shadow effect on focus */
+      outline: none; /* Remove default outline */
+    }
+
+    .myform input::placeholder {
+      color: #A6A6A6; /* Placeholder color */
+    }
+
+    .myform button {
+      color: white;
+      border: none;
+      border-radius: 25px; /* Rounded corners */
+      font-size: 16px; /* Font size */
+      padding: 12px 20px; /* Padding */
+      font-weight: 600; /* Bolder text */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Transition effect */
+      box-shadow: 0 4px 15px rgba(76, 175 , 80, 0.5); /* Shadow effect */
+      width: 100%; /* Full width button */
+      margin-bottom: 15px; /* Space between buttons */
+      outline: none; /* Remove outline */
+    }
+
+    .login-button {
+      background-color: #194202f8; /* Solid green color for login */
+    }
+
+    .login-button:hover {
+      background-color: #194202; /* Darker green on hover */
+      transform: translateY(-2px) scale(1.02); /* Button hover effect with slight scaling */
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.7); /* Stronger shadow on hover */
+    }
+
+    .show-button {
+      background-color: #194202f8; /* Blue color for show button */
+    }
+
+    .show-button:hover {
+      background-color: #194202; /* Darker blue on hover */
+      transform: translateY(-2px) scale(1.02); /* Button hover effect with slight scaling */
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.7); /* Stronger shadow on hover */
+    }
+
+    .myform button:focus {
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus shadow effect */
+    }
+
+    .image img {
+      max-width: 300px; /* Responsive image */
+      margin-left: 20px; /* Space between form and image */
+      animation: slideInRight 0.5s ease; /* Slide-in animation for image */
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .error-messages {
+      margin-top: 10px;
+      color: red; /* Error message color */
+      font-size: 14px; /* Font size for error messages */
+      animation: fadeIn 0.5s ease; /* Fade-in for error messages */
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column; /* Stack elements vertically */
+        padding: 20px; /* Reduced padding */
+      }
+
+      .image {
+        margin-top: 20px; /* Space above image */
+        text-align: center; /* Center align image */
+      }
+
+      .image img {
+        max-width: 100%; /* Make image responsive */
+        margin-left: 0; /* Remove left margin */
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    <div class="myform">
+      <form id="loginForm" method="POST" action="{% url 'admin_login' %}">
+        {% csrf_token %}
+        <h2>ADMIN LOGIN</h2>
+        <input type="text" name="username" id="username" placeholder="Admin Name" required>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        <button type="button" class="show-button" aria-label="Show password">SHOW</button>
+        <button type="submit" class="login-button">LOGIN</button>
+        {% if messages %}
+          <div class="error-messages">
+            <ul>
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </form>
+    </div>
+    <div class="image">
+      <img src="{% static 'img/elements/register.jpg' %}" alt="Login Image">
+    </div>
+  </div>
+
+  <script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>

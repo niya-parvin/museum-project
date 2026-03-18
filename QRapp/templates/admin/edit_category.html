@@ -1,0 +1,150 @@
+{% extends "admin/admin_home.html" %}
+
+{% block content %}
+<div class="container my-4">
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'list_category' %}">Category List</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Category</li>
+    </ol>
+</nav>
+
+<!-- Main Content Container -->
+<div class="container my-4">
+    
+    <h1 class="text-center mb-4">Edit Category</h1>
+    <div class="form-container">
+        <form method="POST" enctype="multipart/form-data">  <!-- Added enctype for file uploads -->
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="name" class="form-label">Category Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ category.name }}" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select class="form-control" id="status" name="status">
+                    <option value="active" {% if category.status == 'active' %}selected{% endif %}>Active</option>
+                    <option value="inactive" {% if category.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            <a href="/list_category/" class="btn btn-primary btn-spacing">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<!-- Styling -->
+<style>
+
+body {
+    background-color: #f7f7f7;
+}
+
+/* Form container styling */
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+/* Form headers */
+h1 {
+    font-weight: 700;
+    color: #333333;
+}
+
+/* Form labels */
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555555;
+}
+
+/* Input styling */
+.form-control {
+    font-size: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    border-color: #5e5df0;
+    box-shadow: 0 0 8px rgba(94, 93, 240, 0.4);
+}
+
+/* Submit button */
+.btn-primary {
+    background-color: #205203;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #194202;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.btn-spacing {
+    margin-left: 20px; /* Adjust the value as needed */
+}
+/* Back button */
+.btn-back {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #194202;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-back:hover {
+    color: #ffc400;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(94, 93, 240, 0.2);
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .btn-primary {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 450px) {
+    .btn-back {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}
+</style>
+{% endblock %}

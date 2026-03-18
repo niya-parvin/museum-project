@@ -1,0 +1,225 @@
+{% extends 'admin/admin_home.html' %}
+
+{% block content %}
+
+<div class="container my-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_add_event' %}">Add Event</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin_event_list' %}">Events List</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Category</li>
+        </ol>
+    </nav>
+<h1 class="text-center mb-4">Event Applications</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Members Count</th>
+            <th>Event</th>
+            <th>Applied On</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in applications %}
+        <tr class="fade-in">
+            <td>{{ application.name }}</td>
+            <td>{{ application.phone_no }}</td>
+            <td>{{ application.email }}</td>
+            <td>{{ application.address }}</td>
+            <td>{{ application.members }}</td>
+            <td>{{ application.event.name }}</td>
+            <td>{{ application.applied_on }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No applications found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if applications.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ applications.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+
+        {% for num in applications.paginator.page_range %}
+            {% if applications.number == num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if applications.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ applications.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ applications.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+</div>
+</div>
+<br>
+<style>
+    /* General Styles */
+    body {
+        background-color: #f7f7f7;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Table styles */
+    .table {
+        width: 90%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden; /* Ensures rounded corners are visible */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        animation: fadeIn 1s ease-in-out; /* Fade in animation */
+    }
+
+    .table th, .table td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: #194202;
+        color: #ffffff;
+        text-transform: uppercase;
+    }
+
+    .table tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e9ecef;
+        transform: scale(1.02);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Fade-in effect for table rows */
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Pagination styles */
+    .pagination {
+        margin-top: 20px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #194202;
+        border-color: #194202;
+        color: white;
+    }
+
+    .page-link {
+        color: #194202;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: transform 0.2s ease;
+    }
+
+    .page-link:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.05);
+    }
+
+    /* Button styles */
+    .btn {
+        padding: 6px 12px;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-danger {
+        background-color: rgb(237, 36, 36);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #fc322b;
+        transform: translateY(-1px);
+    }
+
+    .btn-primary {
+        background-color: #194202;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #ffc400;
+        transform: scale(1.05);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .table thead {
+            display: none;
+        }
+
+        .table tr {
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .table td {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+
+        .table td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 10px;
+        }
+    }
+</style>
+{% endblock %}

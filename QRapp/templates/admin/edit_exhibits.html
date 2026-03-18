@@ -1,0 +1,465 @@
+{% extends "admin/admin_home.html" %}
+
+{% block content %}
+
+<div class="container my-4">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin_home/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/manage_items/">Exhibits List</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Exhibit</li>
+        </ol>
+    </nav>
+
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Edit Exhibit</h1>
+
+        <div class="form-container bg-light p-4 rounded shadow-sm">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Item Name -->
+                <div class="form-group mb-3">
+                    <label for="name" class="form-label">Exhibit Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ exhibit.name }}" required>
+                </div>
+
+                <!-- Item Name (Malayalam) -->
+                <div class="form-group mb-3">
+                    <label for="name_ml" class="form-label">Exhibit Name (Malayalam)</label>
+                    <input type="text" class="form-control" id="name_ml" name="name_ml" value="{{ exhibit.name_ml }}">
+                </div>
+
+                <!-- Description -->
+                <div class="form-group mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" required>{{ exhibit.description }}</textarea>
+                </div>
+
+                <!-- Description (Malayalam) -->
+                <div class="form-group mb-3">
+                    <label for="description_ml" class="form-label">Description (Malayalam)</label>
+                    <textarea class="form-control" id="description_ml" name="description_ml" rows="4">{{ exhibit.description_ml }}</textarea>
+                </div>
+
+                <!-- Date -->
+                <div class="form-group mb-3">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" value="{{ exhibit.date|date:'Y-m-d' }}" required>
+                </div>
+
+                <!-- Category -->
+                <div class="form-group mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-control" id="category" name="category" required>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category.id == exhibit.category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Existing Images with Delete Option -->
+                <div class="form-group mb-3">
+                    <label class="form-label">Current Images</label>
+                    <div class="d-flex flex-wrap">
+                        {% if exhibit_images %}
+                            {% for image in exhibit_images %}
+                                <div class="position-relative m-2">
+                                    <img src="{{ image.image.url }}" alt="Exhibit Image" class="img-thumbnail" style="width: 150px; height:150px;">
+                                    <button type="button" class="btn btn-danger btn-sm delete-image" data-image-id="{{ image.id }}" style="position: absolute; top: 5px; right: 5px;">✖</button>
+                                    <div class="mt-2">
+                                        <label for="caption_{{ image.id }}" class="form-label">Caption (English)</label>
+                                        <input type="text" class="form-control" id="caption_{{ image.id }}" name="caption_{{ image.id }}" value="{{ image.caption|default:'' }}">
+                                        <label for="caption_ml_{{ image.id }}" class="form-label">Caption (Malayalam)</label>
+                                        <input type="text" class="form-control" id="caption_ml_{{ image.id }}" name="caption_ml_{{ image.id }}" value="{{ image.caption_ml|default:'' }}">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No images uploaded. A default placeholder will be shown.</p>
+                            <img src="/static/images/default-placeholder.png" alt="Default Image" class="img-thumbnail m-2" style="width:150px; height:150px;">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-group mb-3">
+                    <label for="images" class="form-label">Upload New Images</label>
+                    <input type="file" class="form-control" id="images" name="images" multiple>
+                    <small class="text-muted">Uploading new images will append to the existing ones.</small>
+                </div>  
+                
+                <!-- Preview Area for New Images -->
+                <div id="new-images-preview" class="d-flex flex-wrap mt-3"></div>
+
+                <!-- Status -->
+                <div id="status-section" class="form-group mb-3">
+                    <label for="status" class="form-label  mt-3">Status</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="active" {% if exhibit.status == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if exhibit.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="custom-btn custom-btn-primary btn-block">Save Changes</button>
+                    <a href="/list_exhibits/" class="custom-btn custom-btn-secondary btn-spacing">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <h2>Success</h2>
+        <p>Exhibit updated successfully!</p>
+        <button id="okButton" class="custom-btn custom-btn-primary">Ok</button>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal">
+    <div class="modal-content">
+        <h2>Error</h2>
+        <p id="errorMessage">There was an error updating the exhibit. Please try again.</p>
+        <button id="errorOkButton" class="custom-btn custom-btn-primary">Okay</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const successModal = document.getElementById('successModal');
+        const errorModal = document.getElementById('errorModal');
+        const okButton = document.getElementById('okButton');
+        const errorOkButton = document.getElementById('errorOkButton');
+        const imagesInput = document.getElementById("images");
+        const previewContainer = document.getElementById("new-images-preview");
+    
+        // Handle the image delete functionality for current images
+        document.querySelectorAll('.delete-image').forEach(button => {
+            button.addEventListener('click', function () {
+                const imageId = this.getAttribute('data-image-id');
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+                // Sending AJAX request to delete the image
+                fetch(`/delete_image/${imageId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ image_id: imageId }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the image from the DOM after successful deletion
+                        this.closest('.position-relative').remove();
+                    } else {
+                        alert('Error deleting image.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    
+        // Handle image preview and deletion for newly uploaded images
+        imagesInput.addEventListener("change", function () {
+    previewContainer.innerHTML = ""; // Clear any existing previews
+
+    // Store selected files for easy manipulation
+    let fileList = Array.from(imagesInput.files);
+
+    fileList.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const imageContainer = document.createElement("div");
+            imageContainer.className = "position-relative m-2";
+            imageContainer.style.width = "150px";
+            imageContainer.style.height = "200px";
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.alt = "Uploaded Image";
+            img.className = "img-thumbnail";
+            img.style.width = "150px";
+            img.style.height = "150px";
+
+            const captionEng = document.createElement("input");
+            captionEng.type = "text";
+            captionEng.name = `new_caption_eng_${index}`;
+            captionEng.placeholder = "Caption (English)";
+            captionEng.className = "form-control mt-2";
+
+            const captionMl = document.createElement("input");
+            captionMl.type = "text";
+            captionMl.name = `new_caption_ml_${index}`;
+            captionMl.placeholder = "Caption (Malayalam)";
+            captionMl.className = "form-control mt-2";
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "btn btn-danger btn-sm delete-preview";
+            deleteBtn.style.position = "absolute";
+            deleteBtn.style.top = "5px";
+            deleteBtn.style.right = "5px";
+            deleteBtn.innerText = "✖";
+
+            // Delete preview and update input files
+            deleteBtn.addEventListener("click", function () {
+                imageContainer.remove(); // Remove the preview
+
+                // Remove the selected file from the file list
+                fileList.splice(index, 1);
+
+                // Reset the file input with updated files
+                resetFileInput(fileList);
+            });
+
+            imageContainer.appendChild(img);
+            imageContainer.appendChild(deleteBtn);
+            imageContainer.appendChild(captionEng);
+            imageContainer.appendChild(captionMl);
+            previewContainer.appendChild(imageContainer);
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    // Helper function to reset file input
+    function resetFileInput(updatedFiles) {
+        const dataTransfer = new ClipboardEvent("").clipboardData || new DataTransfer();
+        updatedFiles.forEach(file => dataTransfer.items.add(file));
+        imagesInput.files = dataTransfer.files;
+    }
+});
+
+    
+// Handle form submission
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        });
+
+        if (response.ok) {
+            successModal.style.display = 'flex'; // Show success modal
+        } else {
+            const errorData = await response.json();
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = errorData.error || 'An unknown error occurred.';
+            errorModal.style.display = 'flex'; // Show error modal
+        }
+    } catch (error) {
+        console.error('Error submitting the form:', error);
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = 'Failed to submit the form. Please try again.';
+        errorModal.style.display = 'flex'; // Show error modal
+    }
+});
+    
+        // Handle modal button clicks
+        okButton.addEventListener('click', function() {
+            successModal.style.display = 'none';
+            window.location.href = '/list_exhibits/'; // Reload the page to see the updated exhibit
+        });
+    
+        errorOkButton.addEventListener('click', function() {
+            errorModal.style.display = 'none';
+        // Optionally focus on the first invalid input
+        const firstErrorField = document.querySelector('.form-control:invalid');
+            if (firstErrorField) {
+            firstErrorField.focus(); // Set focus on the first invalid field
+    }
+        });
+    
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === successModal) {a
+                successModal.style.display = 'none';
+            }
+            if (event.target === errorModal) {
+                errorModal.style.display = 'none';
+            }
+        });
+    });
+    </script>
+
+<!-- CSS Styling -->
+<style>
+body {
+    background-color: #f7f7f7;
+    font-family: 'Poppins', sans-serif; /* Use a consistent font */
+}
+
+/* Form container styling */
+.form-container {
+    max-width: 800px;
+    margin: 20px auto; /* Add some margin for better spacing */
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px; /* Slightly larger border radius for a softer look */
+    padding: 30px; /* Increased padding for better spacing */
+}
+
+/* Headings */
+h1 {
+    font-weight: 600;
+    color: #333333;
+    text-align: center;
+    margin-bottom: 20px; /* Add margin for spacing */
+}
+
+/* Breadcrumb styling */
+.breadcrumb {
+    background-color: transparent; /* Make breadcrumb background transparent */
+}
+
+/* Form labels styling */
+.form-label {
+    font-weight: 600;
+    color: #555555;
+}
+
+/* Form control styling */
+.form-control {
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    border-color: #4CAF50; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Green shadow on focus */
+}
+
+/* Custom button styles */
+.custom-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.custom-btn-primary:hover {
+    background-color: #388E3C; /* Darker green on hover */
+}
+
+.custom-btn-secondary {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.custom-btn-secondary:hover {
+    background-color: #ff3434; /* Darker red on hover */
+    color: white;
+}
+
+.btn-spacing {
+    margin-left: 20px; /* Adjust the value as needed */
+}
+
+/* Image styling for thumbnails */
+.img-thumbnail {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* Styling for the image preview container */
+#new-images-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Add gap between images */
+}
+.d-flex.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Adds space between exhibit cards */
+}
+
+.position-relative {
+    display: inline-block;
+    width: 160px;
+    vertical-align: top;
+}
+
+.position-relative img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.position-relative input.form-control {
+    margin-top: 8px;
+    width: 100%; /* Ensure captions fit within card boundaries */
+}
+
+.mt-2 {
+    margin-top: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px; /* Reduce padding on smaller screens */
+    }
+
+    .custom-btn {
+        font-size: 14px; /* Smaller button text on mobile */
+    }
+
+    #new-images-preview .position-relative {
+        width: 100%; /* Make images full width on mobile */
+        max-width: 150px; /* Limit max width */
+    }
+}
+
+/* Modal styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    text-align: center;
+}
+</style>
+{% endblock %}

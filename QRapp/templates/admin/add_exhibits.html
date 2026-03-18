@@ -1,0 +1,405 @@
+{% extends "admin/admin_home.html" %}
+
+{% block content %}
+    <div class="container py-5">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin_home/">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'list_exhibits' %}">Exhibit List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add Exhibits</li>
+            </ol>
+        </nav>
+
+        <div class="form-container bg-light p-4 rounded shadow-sm">
+            <h2 class="text-center mb-4">Add Exhibits</h2>
+            <form id="add-exhibits-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Item Name -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Item Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <!-- Item Name (Malayalam) -->
+                <div class="mb-3">
+                    <label for="name_ml" class="form-label">Item Name (Malayalam)</label>
+                    <input type="text" class="form-control" id="name_ml" name="name_ml">
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+                
+                <!-- Description (Malayalam) -->
+                <div class="mb-3">
+                    <label for="description_ml" class="form-label">Description (Malayalam)</label>
+                    <textarea class="form-control" id="description_ml" name="description_ml" rows="3"></textarea>
+                </div>
+
+                <!-- Date -->
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-control" id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Image Upload (Multiple) -->
+                <div class="mb-3">
+                    <label for="images" class="form-label">Upload Images</label>
+                    <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple required>
+                </div>
+                
+                <!-- Image Preview Container -->
+                <div id="image-preview-container" class="mb-3">
+                    <!-- Image previews will be displayed here -->
+                </div>
+                
+                <!-- Image Captions -->
+                <div id="image-captions-container" class="mb-3">
+                    <!-- Dynamic captions will be added here -->
+                </div>
+
+                <!-- Status -->
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Submit and View Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="custom-btn custom-btn-primary">Add Exhibits</button>
+                    <a href="/list_exhibits/" class="custom-btn custom-btn-outline-primary">View Items</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <h2>Success</h2>
+            <p>Exhibits added successfully!</p>
+            <button id="okButton" class="custom-btn custom-btn-primary">Ok</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <h2>Error</h2>
+            <p id="errorMessage">There was an error adding the exhibits. Please try again.</p>
+            <button id="errorOkButton" class="custom-btn custom-btn-primary">Okay</button>
+        </div>
+    </div>
+
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            animation: fadeInUp 0.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .custom-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .custom-btn-primary {
+            background-color: #205203ee;
+            color: white;
+        }
+
+        .custom-btn-primary:hover {
+            background-color: #205203;
+            transform: translateY(-3px);
+        }
+
+        .custom-btn-outline-primary {
+            background-color: transparent;
+            color: #000000;
+            border: 2px solid #205203;
+        }
+
+        .custom-btn-outline-primary:hover {
+            background-color: #205203;
+            color: white;
+        }
+    #errorOkButton {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#errorOkButton:hover {
+    background-color: #e60000;
+    transform: translateY(-3px);
+}
+
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            .custom-btn {
+                font-size: 14px;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    .delete-button {
+    position: absolute;
+    top: -20px;
+    right: 5px;
+    color: #fff;
+    border: 1px solid transparent;
+    border-color: #dc3545;
+    border-radius: 0.2rem;
+    font-size: 35px; /* Adjust size as needed */
+    cursor: pointer;
+    padding:0; /* Remove padding */
+    line-height: 1.5; /* Center the "X" vertically */
+}
+
+.delete-button:hover {
+    color: darkred; /* Change color on hover for better UX */
+}
+.image-order-number {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: #000;
+    color: #fff;
+    font-size: 14px;
+    padding: 2px 8px;
+    border-radius: 50%;
+}
+
+    </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('add-exhibits-form');
+    const successModal = document.getElementById('successModal');
+    const errorModal = document.getElementById('errorModal');
+    const okButton = document.getElementById('okButton');
+    const errorOkButton = document.getElementById('errorOkButton');
+    const imagesInput = document.getElementById('images');
+    const captionsContainer = document.getElementById('image-captions-container');
+    const previewContainer = document.getElementById('image-preview-container');
+    const errorMessage = document.getElementById('errorMessage');
+
+    let selectedFiles = [];
+
+    function updateFileInputLabel() {
+        const label = imagesInput.previousElementSibling;
+        label.textContent = selectedFiles.length > 0 ? `Upload Images (${selectedFiles.length} files)` : 'Upload Images';
+    }
+
+    function renderPreviews() {
+    previewContainer.innerHTML = '';
+    captionsContainer.innerHTML = '';
+    selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            const imagePreview = document.createElement('div');
+            imagePreview.classList.add('image-preview');
+            imagePreview.style.position = 'relative';
+
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.alt = `Preview ${index + 1}`;
+            img.style.maxWidth = '150px';
+            img.style.maxHeight = '150px';
+            img.style.borderRadius = '5px';
+            img.style.objectFit = 'cover';
+            img.style.marginRight = '10px';
+
+            const orderNumber = document.createElement('div');
+            orderNumber.classList.add('image-order-number');
+            orderNumber.style.position = 'absolute';
+            orderNumber.style.top = '5px';
+            orderNumber.style.left = '5px';
+            orderNumber.style.backgroundColor = '#000';
+            orderNumber.style.color = '#fff';
+            orderNumber.style.fontSize = '14px';
+            orderNumber.style.padding = '2px 8px';
+            orderNumber.style.borderRadius = '50%';
+            orderNumber.textContent = index + 1; // Image order number
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerHTML = '&times;';
+            deleteButton.classList.add('delete-button');
+            deleteButton.style.position = 'absolute';
+            deleteButton.style.top = '-20px';
+            deleteButton.style.right = '5px';
+            deleteButton.style.backgroundColor = 'transparent';
+            deleteButton.style.color = '#dc3545';
+            deleteButton.style.border = 'none';
+            deleteButton.style.fontSize = '35px';
+            deleteButton.style.cursor = 'pointer';
+            deleteButton.style.padding = '0';
+            deleteButton.style.lineHeight = '1.5';
+
+            deleteButton.addEventListener('click', function () {
+                selectedFiles.splice(index, 1);
+                renderPreviews();
+                updateFileInputLabel();
+            });
+
+            imagePreview.appendChild(img);
+            imagePreview.appendChild(orderNumber); // Add order number
+            imagePreview.appendChild(deleteButton);
+            previewContainer.appendChild(imagePreview);
+
+            const captionInputEn = document.createElement('input');
+            captionInputEn.type = 'text';
+            captionInputEn.classList.add('form-control', 'mt-2');
+            captionInputEn.name = `caption_${index}_en`;
+            captionInputEn.placeholder = `Enter caption for image ${index + 1} (English)`;
+            captionsContainer.appendChild(captionInputEn);
+
+            const captionInputMl = document.createElement('input');
+            captionInputMl.type = 'text';
+            captionInputMl.classList.add('form-control', 'mt-2');
+            captionInputMl.name = `caption_${index}_ml`;
+            captionInputMl.placeholder = `Enter caption for image ${index + 1} (Malayalam)`;
+            captionsContainer.appendChild(captionInputMl);
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+    imagesInput.addEventListener('change', function () {
+        selectedFiles = Array.from(imagesInput.files);
+        renderPreviews();
+        updateFileInputLabel();
+    });
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        formData.delete('images');
+        selectedFiles.forEach((file) => {
+            formData.append('images', file);
+        });
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.error || 'An unexpected error occurred.');
+            }
+
+            // Success case
+            successModal.style.display = 'flex';
+        } catch (error) {
+            console.error('Error submitting the form:', error);
+            errorMessage.textContent = error.message || 'Failed to submit the form. Please check your connection.';
+            errorModal.style.display = 'flex';
+        }
+    });
+
+    okButton.addEventListener('click', function () {
+        successModal.style.display = 'none';
+        window.location.href = '/list_exhibits/';
+    });
+
+    errorOkButton.addEventListener('click', function () {
+        errorModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target === successModal) {
+            successModal.style.display = 'none';
+        }
+        if (event.target === errorModal) {
+            errorModal.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}
+
+               

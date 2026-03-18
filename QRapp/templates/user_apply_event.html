@@ -1,0 +1,275 @@
+{% extends "index.html" %}
+
+{% block content %}
+<title>Apply for Event</title>
+<br>
+<div class="container mt-5 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card animate__animated animate__fadeIn">
+        <div class="card-body">
+            <h2 class="card-title text-center">Apply for {{ event.name }}</h2>
+            <p class="card-text">{{ event.description }}</p>
+            <p class="card-text"><strong>Date:</strong> {{ event.event_date }}</p>
+
+            <!-- Success and error modals -->
+            <div id="successModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3>Success!</h3>
+                    <p>Your application has been successfully submitted.</p>
+                    <button id="okButton">Okay</button>
+                </div>
+            </div>
+
+            <div id="errorModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3>Error!</h3>
+                    <p id="errorMessage"></p>
+                    <button id="errorOkButton">Okay</button>
+                </div>
+            </div>
+
+            <!-- Form to collect user information and submit application -->
+            <form id="eventForm" method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="user_type" class="form-label">Applying As</label>
+                    <select class="form-control" id="user_type" name="user_type" required>
+                        <option value="individual">Individual</option>
+                        <option value="school">School</option>                                            
+                        <option value="high school">High school</option>
+                        <option value="academy" >Academy</option> 
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phno" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="phone_no" name="phone_no" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="members" class="form-label">Number of Members</label>
+                    <input type="number" class="form-control" id="members" name="members" min="1" required>
+                </div>
+                
+                <div id="membersDetails"></div>
+
+                <button type="submit" class="btn-submit">Submit Application</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('eventForm');
+        const successModal = document.getElementById('successModal');
+        const errorModal = document.getElementById('errorModal');
+        const okButton = document.getElementById('okButton');
+        const errorOkButton = document.getElementById('errorOkButton');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Simulate form submission for demonstration
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    successModal.style.display = 'flex';  // Show the success modal
+                } else {
+                    errorModal.style.display = 'flex';  // Show the error modal
+                    document.getElementById('errorMessage').textContent = data.error || 'An error occurred';
+                }
+            })
+            .catch(error => {
+                errorModal.style.display = 'flex';  // Show the error modal
+                document.getElementById('errorMessage').textContent = 'An error occurred while submitting the form.';
+            });
+        });
+
+        // Close success modal when "Okay" is clicked
+        if (okButton) {
+            okButton.addEventListener('click', function() {
+                successModal.style.display = 'none';  // Close the modal
+                window.location.href = '/events_list/';  // Replace with the actual redirect URL
+            });
+        }
+
+        // Close error modal when "Okay" is clicked
+        if (errorOkButton) {
+            errorOkButton.addEventListener('click', function() {
+                errorModal.style.display = 'none';  // Close the modal
+            });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const userTypeSelect = document.getElementById('user_type');
+    const membersInputDiv = document.getElementById('members').parentElement;
+    const membersInput = document.getElementById('members');
+    const membersDetailsContainer = document.getElementById('membersDetails');
+
+    function updateMemberFields() {
+        let userType = userTypeSelect.value;
+
+        // Show 'Number of Members' only for school, academy, or high school
+        if (userType === 'school' || userType === 'academy' || userType === 'high school') {
+            membersInputDiv.style.display = 'block';
+        } else {
+            membersInputDiv.style.display = 'none';
+            membersDetailsContainer.innerHTML = ''; // Clear members' details when hidden
+            membersInput.value = ''; // Reset number of members
+        }
+    }
+    function generateMemberFields() {
+        let membersCount = parseInt(membersInput.value) || 0;
+        membersDetailsContainer.innerHTML = '';
+
+        if ((userTypeSelect.value === 'school' || userTypeSelect.value === 'academy' || userTypeSelect.value === 'high school') && membersCount > 0) {
+            for (let i = 1; i <= membersCount; i++) {
+                let memberFieldHTML = `
+                    <div class="mb-3">
+                        <h5>Student ${i}</h5>
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="member_name_${i}" required>
+
+                        <label class="form-label">Phone</label>
+                        <input type="text" class="form-control" name="member_phone_${i}" pattern="\\d{10}" title="Enter a valid 10-digit phone number" required>
+
+                        <label class="form-label">Class</label>
+                        <input type="text" class="form-control" name="member_class_${i}" required>
+                    </div>
+                `;
+                membersDetailsContainer.insertAdjacentHTML('beforeend', memberFieldHTML);
+            }
+        }
+    }
+
+    // Event Listeners
+    userTypeSelect.addEventListener('change', updateMemberFields);
+    membersInput.addEventListener('input', generateMemberFields);
+
+    // Run on page load to set initial state
+    updateMemberFields();
+});
+
+</script>
+
+<style>
+    /* Custom styles for Apply for Event page */
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+    .card {
+        width: 100%;
+        max-width: 600px;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: -90px;
+        background-color: #fff;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .card-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #333;
+        text-align: center;
+        animation: slideInFromTop 1s ease-out;
+    }
+    .card-text {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-weight:500;
+        animation: slideInFromTop 1s ease-out 0.3s;
+    }
+    .form-label {
+        font-weight: 500;
+        color: #555;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 0.55rem;
+        font-size: 1rem;
+        color: #333;
+        transition: border-color 0.3s;
+        animation: slideInFromLeft 0.8s ease-out;
+    }
+    .form-control:focus {
+        border-color: #007bff;
+    }
+    .btn-submit {
+        background-color: #28a745;
+        border-color: #28a745;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 5px;
+        display: block;
+        width: 100%;
+        margin-top: 1rem;
+        text-align: center;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+    .btn-submit:hover {
+        background-color: #218838;
+        border-color: #218838;
+    }
+    /* Modal styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        width: 80%;
+        max-width: 400px;
+    }
+    .modal-content button {
+        padding: 10px 20px;
+        background-color: #28a745;
+        border: none;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    .modal-content button:hover {
+        background-color: #218838;
+    }
+</style>
+{% endblock %}

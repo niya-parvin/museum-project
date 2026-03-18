@@ -1,0 +1,292 @@
+{% extends "admin/admin_home.html" %}
+{% block content %}
+
+<div class="container my-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="/add_exhibit/">Add Exhibits</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Exhibit List</li>
+        </ol>
+    </nav>
+
+    <h1 class="text-center mb-4">Exhibits List</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered rounded-table">
+            <thead>
+                <tr>
+                    <th>Sl. No.</th>
+                    <th>Item Name</th>
+                    <!-- <th>Item Name(Ml)</th>
+                    <th>Description</th>
+                    <th>Description(Ml)</th> -->
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Images</th>
+                    <th>QR Code</th>
+                    <th>View</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in exhibits %}
+                <tr class="fade-in">
+                    <td data-label="Sl. No.">{{ forloop.counter }}</td>
+                    <td data-label="Item Name">{{ item.name }}</td>
+                    <!-- <td data-label="Item Name">{{item.name_ml}}</td>
+                    <td data-label="Description">{{ item.description|slice:":100" }}...</td>
+                    <td data-label="Description">{{ item.description_ml|slice:":100" }}...</td> -->
+                    <td data-label="Date">{{ item.date }}</td>
+                    <td data-label="Category">{{ item.category.name }}</td>
+                    <td data-label="Status">{{ item.status }}</td>
+                    <td data-label="Images">
+                        {% if item.images.all %}
+                            <div class="image-gallery">
+                                {% for image in item.images.all %}
+                                    <img src="{{ image.image.url }}" alt="{{ item.name }}" class="img-thumbnail">
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            No images available
+                        {% endif %}
+                    </td>
+                    <td data-label="QR Code">
+                        {% if item.qr_code_image %}
+                            <img src="{{ item.qr_code_image.url }}" alt="QR Code" class="img-thumbnail img-fluid qr-code-image">
+                        {% else %}
+                            No QR Code
+                        {% endif %}
+                    </td>
+                    <td data-label="View">
+                        <a href="{% url 'view_exhibit' item.id %}" class="btn btn-info btn-sm">View</a>
+                    </td>
+                    <td class="action-buttons" data-label="Actions">
+                        <div class="action-button-group">
+                            <a href="{% url 'edit_exhibits' item.id %}" class="btn btn-primary btn-sm">Edit</a>
+                            <form action="{% url 'delete_exhibit' item.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this Exhibit?');">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center">No items found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if exhibits.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ exhibits.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in exhibits.paginator.page_range %}
+                {% if exhibits.number == num %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if exhibits.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ exhibits.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ exhibits.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+
+    /* Table styles */
+    .table {
+        width: 100%;
+        margin: auto;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: #194202;
+        color: #ffffff;
+        text-transform: uppercase;
+    }
+
+    .table tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e9ecef;
+        transform: scale(1.02);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Pagination styles */
+    .pagination {
+        margin-top: 20px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #194202;
+        border-color: #194202;
+        color: white;
+    }
+
+    .page-link {
+        color: #194202;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: transform 0.2s ease;
+    }
+
+    .page-link:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.05);
+    }
+
+    /* Button styles */
+    .btn {
+        padding: 6px 12px;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-danger {
+        background-color: rgb(237, 36, 36);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #fc322b;
+        transform: translateY(-1px);
+    }
+
+    .btn-primary {
+        background-color: #194202;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #ffc400;
+        transform: scale(1.05);
+    }
+
+    .qr-code-image {
+        max-width: 100px;
+        height: auto;
+        margin: auto;
+    }
+
+    td[data-label="QR Code"] {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .scrollable-text {
+        white-space: nowrap;
+        overflow-x: auto;
+        text-overflow: ellipsis;
+        max-width: 200px;
+        display: block;
+    }
+
+    .image-gallery {
+        display: flex;
+        gap: 15px;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .image-gallery img {
+        width: 100px;
+        height: auto;
+    }
+
+    .action-button-group {
+        display: flex;
+        gap: 5px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .table thead {
+            display: none;
+        }
+
+        .table tr {
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .table td {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+
+        .table td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 10px;
+        }
+    }
+</style>
+{% endblock %}

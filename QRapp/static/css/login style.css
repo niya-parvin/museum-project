@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f1f3f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    margin: 0;
+    padding-bottom: 60px; /* To prevent footer overlap */
+}
+
+h1 {
+    font-weight: bold;
+    color: #000000;
+    margin: 0;
+    font-size: 30px;
+    padding: 20px 0;
+    text-align:center;
+}
+
+form {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 80px; /* Increased padding for a larger box */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px; /* Increased max-width for a wider box */
+    margin: 0 20px;
+}
+
+input {
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    padding: 12px 20px;
+    margin: 10px 0;
+    width: 100%;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #2ba84a;
+    box-shadow: 0 0 3px rgba(43, 168, 74, 0.5);
+}
+
+button {
+    background-color: #2ba84a;
+    border: none;
+    color: #ffffff;
+    padding: 12px 45px;
+    margin: 15px 0;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 80ms ease-in, background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #26993e;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:focus {
+    outline: none;
+}
+
+footer {
+    background-color: #f6f5f7;
+    color: #777;
+    font-size: 12px;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 10px;
+}
+
+footer i {
+    color: #2ba84a;
+}
+
+footer a {
+    color: #3c97bf;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries for Responsiveness */
+
+/* For tablets */
+@media (max-width: 768px) {
+    form {
+        padding: 40px 50px; /* Adjusted padding for smaller screens */
+        max-width: 500px; /* Slightly smaller width */
+    }
+
+    h1 {
+        font-size: 24px; /* Slightly smaller font size */
+    }
+
+    button {
+        padding: 12px 30px; /* Adjust button padding */
+        font-size: 12px; /* Smaller font size */
+    }
+
+    footer {
+        font-size: 10px; /* Smaller footer text for tablets */
+    }
+}
+
+/* For mobile phones */
+@media (max-width: 480px) {
+    form {
+        padding: 30px 40px; /* Further reduced padding */
+        max-width: 90%; /* Take up 90% of screen width */
+    }
+
+    h1 {
+        font-size: 22px; /* Smaller font size */
+    }
+
+    input, button {
+        font-size: 12px; /* Adjust input and button text size */
+    }
+
+    footer {
+        font-size: 10px; /* Smaller footer text for phones */
+    }
+}

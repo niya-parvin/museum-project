@@ -1,0 +1,804 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.news-section { 
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 7px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    margin-top: 7px;
+    margin-left: 15px;
+    position: sticky;
+    top: 0;
+    width: 550px; /* Make the section full width */
+    z-index: 1000;
+    background-color: white;
+    overflow: hidden; /* Prevents text from overflowing */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.latest-news {
+    width: max-content; /* Width of the "Latest News" label */
+    text-align: center;
+    color: #000;
+    font-weight: bold;
+    background: #ffc400;
+    position: absolute;
+    z-index: 10;
+    height: 35px;
+    white-space: nowrap;
+    padding: 5px 10px;
+    left: 0;
+}
+
+.news-title {
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 200px; /* Space for "Latest News" label */
+    color: #212237;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%; /* Make it take full width */
+}
+
+@media (max-width: 768px) {
+    .news-section {
+        font-size: 14px; /* Smaller font size on mobile */
+        padding-left: 50px; /* Adjust padding for mobile */
+        width: 100%;
+    }
+
+    .news-title {
+        padding-left: 130px; /* Adjust space for "Latest News" label */
+    }
+    .social-links {
+        display: none ; /* Hide social links */
+    }
+}
+
+/* Long Box Behind the Title */
+.title-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f39c12;
+    z-index: -1;
+    padding: 5px;
+    margin: 0;
+    width: 100%;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* First Header (Top Bar) */
+#header-top {
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 10px 20px;
+    height: auto; /* Allow height to adjust based on content */
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Prevents overflow on smaller screens */
+}
+
+/* Align left & right sections properly */
+#header-top .top-head-left ul,
+#header-top .top-head-right ul {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    margin-left: 80px;
+}
+
+/* Remove unnecessary right margin for the last element */
+#header-top .top-head-left ul li,
+#header-top .top-head-right ul li {
+    margin-right: 15px;
+}
+
+#header-top .top-head-left ul li:last-child,
+#header-top .top-head-right ul li:last-child {
+    margin-right: 0;
+}
+
+/* Top Right Section Styles */
+.top-head-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Styling the QR Scanner Icon */
+#scanner-icon-mobile {
+    font-size: 30px;
+    color: #000000;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    position: relative; /* Removed fixed positioning */
+    margin-left: 30px;
+}
+
+/* Hover effect */
+#scanner-icon-mobile:hover {
+    transform: scale(1.1);
+}
+
+/* Social Media Links */
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f39c12;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 3px #ffffff;
+}
+
+/* Hover effect for social icons */
+.social-links a:hover {
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: inset 0 0 3px #000000;
+}
+/* Second Header ( Main Navigation) */
+#header-main {
+    background-image: url('/static/img/elements/row-strip-green.jpg');
+    padding: 5px 0;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    left: 0;
+    justify-content: space-between;
+    z-index: 999;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Container */
+#header-main .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Logo Section */
+#header-main #logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+}
+
+#header-main #logo a {
+    display: block;
+}
+
+#header-main #logo a img {
+    width: 70%;
+    height: auto;
+}
+
+/* Navigation Menu Container */
+#header-main nav#nav-menu-container {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+    left: 50px;
+}
+
+/* Main Navigation Menu */
+#header-main .nav-menu {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Navigation Menu List Items */
+#header-main .nav-menu li {
+    margin-right: 15px;
+    position: relative;
+}
+
+/* Menu Links */
+#header-main .nav-menu a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    padding: 20px 0;
+    line-height: 20px;
+    font-weight: 500;
+    margin: 0px 4px;
+}
+
+/* Hover Effect for Menu Links */
+#header-main .nav-menu li a:hover {
+    color: #f39c12;
+}
+
+/* Submenu (Dropdown) */
+#header-main .nav-menu .menu-has-children ul {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: 4px solid #f39c12;
+    margin: 0;
+    margin-top: 5px;
+    padding: 8px 15px;
+    width: 220px;
+}
+
+/* Show submenu on hover */
+#header-main .nav-menu .menu-has-children:hover > ul {
+    display: block;
+}
+
+/* Submenu Items */
+#header-main .nav-menu .menu-has-children ul li a {
+    font-size: 15px;
+    color: #212237;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 10px 0;
+    line-height: 15px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* Hover Effect for Submenu Items */
+#header-main .nav-menu .menu-has-children ul li a:hover {
+    color: #f39c12;
+    transform: translateX(5px);
+}
+
+/* Scrolled Header Styles */
+#header-main.scrolled {
+    background-image: url(/static/img/elements/white2.png);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 0; /* Ensure no margin is added */
+    padding-top: 0; /* Ensure no padding is added */
+}
+
+/* Logo Section when Header is Scrolled */
+#header-main.scrolled #logo a img {
+    height: auto;
+    filter: brightness() hue-rotate(38deg) invert(100%);
+}
+
+/* Hover effect when scrolled */
+#header-main .nav-menu li.menu-has-children > a.scrolled:hover::after {
+    color: #080808; /* Color on hover when scrolled */
+}
+
+#header-main.scrolled .nav-menu a {
+    color: #333;
+}
+
+#header-main.scrolled .nav-menu .menu-has -children ul {
+    background-color: #ffffff;
+}
+
+/* Initially hide the arrow */
+#header-main .nav-menu li.menu-has-children > a::after {
+    content: '';
+}
+
+/* Display the arrow on hover */
+#header-main .nav-menu li.menu-has-children:hover > a::after {
+    content: '▼';
+    font-size: 12px;
+    margin-left: 5px;
+    vertical-align: middle;
+    color: #fff;
+}
+
+/* Mobile Navigation Toggle Icon Styles */
+#mobile-nav-toggle {
+    display: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+    margin-left: 10px;
+    position: fixed;
+    right: 15px;
+    color: #010101;
+    z-index: 1001;
+    top: 13px;
+    border: 0;
+    background: none;
+    font-size: 30px;
+    transition: all 0.4s;
+    outline: none;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+#mobile-nav-toggle i {
+    color: #010101;
+    font-weight: 900;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+
+  
+}
+#mobile-nav-toggle:hover {
+    transform: scale(1.1);
+}
+
+#header-main #scanner-icon-mobile {
+    display: none;
+}
+@media (max-width: 960px) {
+    #mobile-nav-toggle {
+        display: inline; /* Show the toggle button on mobile */
+    }
+    #nav-menu-container {
+        display: none; /* Hide the nav menu initially */
+    }
+}
+
+/* Mobile Nav Styling */
+#mobile-nav {
+    position: fixed;
+    top: 0;
+    padding-top: 18px;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    left: -260px;
+    width: 260px;
+    overflow-y: auto;
+    transition: 0.4s;
+    z-index: 1001;
+    display: none;
+}
+
+#mobile-nav.active {
+    left: 0; /* Slide the menu in */
+    display: block; /* Show the menu when 'active' class is added */
+}
+
+#mobile-nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#mobile-nav ul li {
+    position: relative;
+}
+
+#mobile-nav ul li a {
+    color: #fff;
+    font-size: 13px;
+    text-transform: uppercase;
+    overflow: hidden;
+    padding: 10px 22px 10px 15px;
+    position: relative;
+    text-decoration: none;
+    width: 100%;
+    display: block;
+    outline: none;
+    font-weight: 700;
+}
+
+#mobile-nav ul li a:hover {
+    color: #1d9f0c;
+}
+
+#mobile-nav ul li li {
+    padding-left: 30px;
+}
+
+#mobile-nav ul .menu-has-children i {
+    position: absolute;
+    right: 0;
+    z-index: 100;
+    padding: 15px;
+    cursor: pointer;
+    color: #fff;
+}
+
+#mobile-nav ul .menu-has-children i.fa-chevron-up {
+    color: #88d200;
+}
+
+#mobile-nav ul .menu-has-children li a {
+    text-transform: none;
+}
+
+#mobile-nav ul .menu-item-active {
+    color: #3fd200;
+}
+
+#mobile-body-overly {
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+}
+
+#mobile-body-overly.show {
+    display: block;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+
+    #header-top {
+    display: none !important;
+    }
+
+   .navbar{
+    display:none;
+   }
+
+ /* Hide all other header elements on mobile */
+    .social-links,
+    .news-section {
+        display: none !important;
+    }
+       /* Move the header main section up */
+       #header-main {
+        margin-top: 0px; /* Remove any top margin */
+        padding-top: 0; /* Adjust padding if needed */
+    }
+
+    .top-head-right {
+        display: flex; /* Use flexbox for alignment */
+        align-items: center; /* Center items vertically */
+        gap: 15px; 
+        justify-content: flex-end; /* Align items to the right */
+    }
+
+    /* Ensure the scanner icon is displayed next to the toggle button */
+    #mobile-nav-toggle {
+        display: inline-block;
+        cursor: pointer; /* Change cursor to pointer */
+        margin-right:10px; /* Space between toggle and scanner icon */
+        height: auto;
+        width:auto;
+        right:0px;
+    }
+    #header-top #scanner-icon-mobile {
+        display: none;
+    }
+/* Show the scanner icon in the header-main section */
+#header-main #scanner-icon-mobile {
+    display: flex; /* Ensure it remains visible */
+    font-size: 28px;
+    color: #000000;
+    cursor: pointer;
+    position: absolute;
+    right: 80px; /* Adjusted for better alignment */
+    top: 10px;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1100;
+    transform: translateZ(0); /* Prevents flickering */
+    -webkit-transform: translateZ(0); /* Safari fix */
+    width: 40px;
+    pointer-events: auto;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover effect for better interaction */
+#header-main #scanner-icon-mobile:hover {
+    transform: scale(1.1);
+}
+
+
+    /* Adjust the layout of the header-main to accommodate both elements */
+    #header-main .container {
+        display: flex; /* Use flexbox for alignment */
+        align-items:center; /* Center items vertically */
+        justify-content: flex-start; /* Space between elements */
+    }
+        /* Ensure the scanner icon is displayed next to the toggle button */
+        #mobile-nav-toggle,
+        #scanner-icon {
+            margin-left: 15px !important; /* Space between toggle and scanner icon */
+        }
+        
+    /* Top Header Adjustments */
+    #header-top .top-head-left ul li,
+    #header-top .top-head-right ul li {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    #header-top .top-head-right {
+        text-align: right;
+        width: 100%;
+    }
+
+    /* Main Navigation Adjustments */
+    #header-main .nav-menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+    }
+
+    #header-main .nav-menu.active {
+        display: flex;
+    }
+
+    #header-main .nav-menu li {
+        display: block;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    #header-main .nav-menu li a {
+        padding: 10px;
+        text-align: left;
+    }
+
+    /* Sub menu Adjustments */
+    #header-main .nav-menu li ul {
+        position: static;
+        box-shadow: none;
+        display: none;
+    }
+
+    #header-main .nav-menu li:hover > ul {
+        display: block;
+    }
+
+    /* Remove dropdown arrow for mobile */
+    #header-main .nav-menu li.menu-has-children > a::after {
+        content: '';
+    }
+
+    /* Mobile Navigation Toggle Icon Display */
+    #mobile-nav-toggle {
+        display: block;
+    }
+
+    /* Adjust social links for mobile */
+    .social-links {
+        display: none !important;
+        }
+    
+}
+@supports (-webkit-touch-callout: none) {
+    #scanner-icon-mobile {
+        position: fixed !important;
+        top: 3px ;
+        right: 60px ;
+    }
+}
+
+
+.active-event-carusel {
+    display: flex;
+    overflow: hidden;
+}
+
+.events-carousel {
+    display: flex; /* Use flexbox to arrange items in a row */
+    overflow-x: auto; /* Allow horizontal scrolling */
+    gap: 100px; /* Space between items */
+    scroll-snap-type: x mandatory; /* Enable snap scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    scroll-behavior: smooth; /* Adds smooth scroll behavior */
+}
+
+/* Hide the scrollbar */
+.events-carousel::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for WebKit browsers */
+}
+
+/* For other browsers */
+.events-carousel {
+    -ms-overflow-style: none; /* For IE and Edge */
+    scrollbar-width: none; /* For Firefox */
+}
+
+.events-carousel .col-lg-3,
+.events-carousel .col-md-4,
+.events-carousel .col-sm-6 {
+    flex: 0 0 auto; /* Prevent flex items from shrinking */
+    scroll-snap-align: start; /* Align items to the start of the scroll container */
+    margin-right: 20px;
+}
+
+/* Remove the margin from the last item */
+.events-carousel .col-lg-3:last-child,
+.events-carousel .col-md-4:last-child,
+.events-carousel .col-sm-6:last-child {
+    margin-right: 0; /* Remove margin for the last item */
+}
+
+/* Event card styling */
+.single-event {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space between the content inside the event card */
+    height: 100%; /* Ensures cards have equal height */
+}
+
+/* Image styling */
+.single-event img {
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+    max-width: 100%;
+}
+
+/* Title and other text styles */
+.single-event h4 {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.single-event h6 {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.single-event .date {
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+}
+
+@media (max-width: 1200px) {
+    .events-carousel .col-lg-3 {
+        flex: 0 0 25%; /* 4 items on large screens */
+    }
+}
+
+@media (max-width: 992px) {
+    .events-carousel .col-md-4 {
+        flex: 0 0 33.33%; /* 3 items on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .events-carousel .col-sm-6 {
+        flex: 0 0 50%; /* 2 items on small screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .events-carousel .col-sm-6 {
+        flex: 0 0 100%; /* 1 item on extra small screens */
+    }
+}
+
+.quote-area {
+
+    padding: 60px 20px; /* Padding for top/bottom and left/right */
+    border-radius: 15px; /* Rounded corners */
+    margin-bottom: 40px; /* Space between sections */
+}
+
+.quote-left h1 {
+    font-size: 2.5rem; /* Large font size */
+    color: #00796b; /* Teal color */
+    font-weight: bold; /* Bold text */
+    margin-bottom: 20px; /* Space below heading */
+    font-family: 'Arial', sans-serif; /* Friendly font */
+    margin: 0; /* Remove default margin */
+}
+
+.quote-left h1 span {
+    color: #004d40; /* Darker teal for emphasis */
+}
+.quote-left {
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100%; /* Ensure it takes full height of the parent */
+    text-align: center; /* Center the text */
+}
+
+
+.quote-right p {
+    font-size: 1.1rem; /* Slightly larger font size */
+    line-height: 1.8; /* Increased line height for readability */
+    color: #424242; /* Dark gray color */
+    margin-bottom: 15px; /* Space between paragraphs */
+    font-family: 'Arial', sans-serif; /* Friendly font */
+}
+
+.quote-right p:last-child {
+    margin-bottom: 0; /* No margin for the last paragraph */
+}
+
+.container {
+    max-width: 1200px; /* Maximum width for the container */
+    margin: 0 auto; /* Center the container */
+}
+
+.row {
+    display: flex; /* Flexbox for layout */
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: space-between; /* Space between columns */
+}
+
+.col-lg-6 {
+    flex: 0 0 48%; /* Flex basis for columns */
+    max-width: 48%; /* Maximum width for columns */
+    padding: 15px; /* Padding for columns */
+}
+
+
+@media (max-width: 768px) {
+    .col-lg-6 {
+        flex: 0 0 100%; /* Full width on small screens */
+        max-width: 100%; /* Maximum width for small screens */
+    }
+}
