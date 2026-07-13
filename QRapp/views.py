@@ -315,11 +315,17 @@ def admin_add_exhibit(request):
             )
 
             # Generate the exhibit URL for QR code
-            base_url = "https://603zj39v-8001.inc1.devtunnels.ms"  # Replace with your actual base URL
+            # Prefer a configurable production base URL; fallback to current request origin.
+            # Set SITE_BASE_URL in environment for production if needed.
+            base_url = getattr(settings, 'SITE_BASE_URL', None)
+            if not base_url:
+                base_url = request.build_absolute_uri('/')[:-1]
+
             exhibit_url = f"{base_url}/user_view_exhibit/{exhibit.id}/"
 
             # Generate QR code for the newly created exhibit
             qr_code_url = generate_qr_code(exhibit_url, exhibit.id)
+
 
             # Save the QR code URL to the exhibit
             exhibit.qr_code_image = qr_code_url

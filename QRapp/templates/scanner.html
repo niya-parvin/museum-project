@@ -95,12 +95,30 @@
                         const code = jsQR(imageData.data, canvas.width, canvas.height);
                         if (code) {
                             stopScanner();
-                            if (code.data.startsWith('http')) {
-                                window.location.href = code.data;
-                            } else {
-                                result.textContent = "Scanned data: " + code.data;
-                                scanAgainButton.style.display = "block";
+
+                            const raw = (code.data || '').trim();
+
+                            // Accept full URLs
+                            if (raw.startsWith('http://') || raw.startsWith('https://')) {
+                                window.location.href = raw;
+                                return;
                             }
+
+                            // Accept relative paths (e.g. /user_view_exhibit/3/)
+                            if (raw.startsWith('/')) {
+                                window.location.href = window.location.origin + raw;
+                                return;
+                            }
+
+                            // Accept exhibit ID only (e.g. 3)
+                            if (/^\d+$/.test(raw)) {
+                                window.location.href = window.location.origin + '/user_view_exhibit/' + raw + '/';
+                                return;
+                            }
+
+                            // Otherwise show the scanned payload
+                            result.textContent = "Unrecognized QR payload: " + raw;
+                            scanAgainButton.style.display = "block";
                             return;
                         }
                     }
